@@ -4227,6 +4227,62 @@ var o=document.getElementById('a11yopen');o.onclick=op;o.onkeydown=function(e){i
 document.getElementById('a11yclose').onclick=cl;M.onclick=function(e){if(e.target===M)cl()};document.addEventListener('keydown',function(e){if(e.key==='Escape')cl()});})();
 </script>
 <style>
+#fbm{display:none;position:fixed;inset:0;z-index:200;background:rgba(43,42,40,.55);overflow:auto;padding:24px 12px}
+#fbm.on{display:block}
+#fbm .box{max-width:560px;margin:0 auto;background:#fffdf6;border:2px solid #2b2a28;box-shadow:5px 5px 0 #2b2a28;padding:20px 22px 24px;color:#2b2a28}
+#fbm h2{font-family:Suez,'Secular One';font-weight:400;font-size:26px;margin:0 0 4px}
+#fbm .sb{font-size:14px;color:#7a6f5c;margin-bottom:14px}
+#fbm label{display:block;font-weight:700;font-size:14px;margin:12px 0 4px}
+#fbm label em{font-style:normal;font-weight:400;color:#7a6f5c;font-size:12.5px}
+#fbm input,#fbm select,#fbm textarea{width:100%;box-sizing:border-box;font:inherit;font-size:15px;padding:9px 10px;border:1.5px solid #2b2a28;border-radius:4px;background:#fff;color:#2b2a28}
+#fbm textarea{min-height:120px;resize:vertical}
+#fbm .kind{display:flex;border:2px solid #2b2a28;border-radius:999px;overflow:hidden;width:max-content;margin-top:4px}
+#fbm .kind button{-webkit-appearance:none;appearance:none;font-family:Suez,'Secular One';font-size:15px;border:0;background:#fff;color:#2b2a28;-webkit-text-fill-color:#2b2a28;padding:7px 18px;cursor:pointer}
+#fbm .kind button.on{background:#2b2a28;color:#f8f5ec;-webkit-text-fill-color:#f8f5ec}
+#fbm .send{-webkit-appearance:none;appearance:none;display:block;margin:18px auto 0;font-family:Suez,'Secular One';font-size:18px;background:#f6e2b4;color:#2b2a28;-webkit-text-fill-color:#2b2a28;border:2px solid #2b2a28;border-radius:6px;padding:10px 34px;box-shadow:3px 3px 0 #2b2a28;cursor:pointer}
+#fbm .send[disabled]{opacity:.6}
+#fbm .msg{text-align:center;margin-top:12px;font-weight:700;font-size:15px}
+#fbm .x{float:left;-webkit-appearance:none;appearance:none;background:none;border:0;border-bottom:1.5px solid #9a7b3f;font-family:Suez,'Secular One';font-size:15px;color:#7a6f5c;-webkit-text-fill-color:#7a6f5c;cursor:pointer}
+</style>
+<div id="fbm" role="dialog" aria-modal="true" aria-labelledby="fbt"><div class="box">
+<button class="x" type="button" id="fbx">סגירה ✕</button>
+<h2 id="fbt">הערות ותיקונים</h2>
+<div class="sb">מצאתם טעות, או שיש לכם הצעה? נשמח לשמוע.</div>
+<form id="fbf" novalidate>
+<label>סוג ההערה</label>
+<div class="kind"><button type="button" data-k="s" class="on">על סימן מסוים</button><button type="button" data-k="g">הערה כללית</button></div>
+<label for="fbn">שם השולח</label><input id="fbn" name="name" required autocomplete="name">
+<label for="fbp">טלפון <em>(לא חובה)</em></label><input id="fbp" name="phone" type="tel" autocomplete="tel">
+<div id="fbsw"><label for="fbs">סימן</label><select id="fbs" name="siman"></select></div>
+<label for="fbsub">נושא</label><input id="fbsub" name="topic" required>
+<label for="fbc">ההערה</label><textarea id="fbc" name="comment" required></textarea>
+<button class="send" type="submit">שליחה</button>
+<div class="msg" id="fbmsg" role="status"></div>
+</form>
+</div></div>
+<script>
+(function(){
+var TO='yonatanmo13@gmail.com',M=document.getElementById('fbm'),F=document.getElementById('fbf'),S=document.getElementById('fbs'),kind='s';
+var old=document.querySelector('nav.tabs'),labs=[];if(old)[].forEach.call(old.querySelectorAll('button'),function(b){var m=(b.getAttribute('onclick')||'').match(/\d+/);if(m&&m[0]!=='0')labs.push([m[0],b.textContent.trim()])});
+S.innerHTML=labs.map(function(l){return '<option value="'+l[0]+'">'+l[1]+'</option>'}).join('');
+function setK(k){kind=k;[].forEach.call(M.querySelectorAll('.kind button'),function(b){b.classList.toggle('on',b.dataset.k===k)});document.getElementById('fbsw').style.display=k==='s'?'':'none'}
+M.querySelector('.kind').onclick=function(e){var b=e.target.closest('button');if(b)setK(b.dataset.k)};
+function op(){var a=document.querySelector('.tabpane.on'),i=a?[].indexOf.call(document.querySelectorAll('.tabpane'),a):0;if(i>0){S.value=String(i);setK('s')}else setK('g');document.getElementById('fbmsg').textContent='';M.classList.add('on');document.body.style.overflow='hidden'}
+function cl(){M.classList.remove('on');document.body.style.overflow=''}
+window.openFeedback=op;document.getElementById('fbx').onclick=cl;M.onclick=function(e){if(e.target===M)cl()};
+F.onsubmit=function(e){e.preventDefault();var g=function(id){return document.getElementById(id).value.trim()},msg=document.getElementById('fbmsg');
+ if(!g('fbn')||!g('fbsub')||!g('fbc')){msg.textContent='נא למלא שם, נושא והערה';return}
+ var sim=kind==='s'?(S.options[S.selectedIndex]||{}).text:'הערה כללית';
+ var d={'שם':g('fbn'),'טלפון':g('fbp')||'—','סימן':sim,'נושא':g('fbsub'),'הערה':g('fbc'),_subject:'הערה לאתר חזרות בכיף – '+sim,_template:'table',_captcha:'false'};
+ var btn=F.querySelector('.send');btn.disabled=true;msg.textContent='שולח…';
+ fetch('https://formsubmit.co/ajax/'+TO,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(d)}).then(function(r){return r.json()}).then(function(j){if(String(j.success)!=='true')throw 0;msg.textContent='✓ תודה! ההערה נשלחה';F.reset();setK(kind)}).catch(function(){
+  var body='שם: '+d['שם']+'\nטלפון: '+d['טלפון']+'\nסימן: '+sim+'\nנושא: '+d['נושא']+'\n\n'+d['הערה'];
+  msg.innerHTML='לא הצלחנו לשלוח ישירות. <a href="mailto:'+TO+'?subject='+encodeURIComponent(d._subject)+'&body='+encodeURIComponent(body)+'">לחצו כאן לשליחה במייל</a>';
+ }).then(function(){btn.disabled=false})};
+var nav=document.querySelector('.sfoot nav');if(nav){var a=document.createElement('a');a.textContent='הערות ותיקונים';a.setAttribute('role','button');a.tabIndex=0;a.onclick=op;nav.insertBefore(a,nav.firstChild)}
+})();
+</script>
+<style>
 nav.tabs{display:none!important}
 .nv2{position:sticky;top:0;z-index:120;background:#f8f5ec;border-bottom:2px solid #2b2a28}
 .nv2{width:100%;max-width:100vw;box-sizing:border-box}
