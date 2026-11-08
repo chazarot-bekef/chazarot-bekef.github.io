@@ -4184,5 +4184,40 @@ var home=document.getElementById('tab0'),grid=home&&home.querySelector('.hgrid')
 if(grid){var bt=document.createElement('a');bt.className='sumbtn';bt.href='javascript:void 0';bt.innerHTML='<span class="t1">מבחן מסכם</span><span class="t2">שאלות פתוחות מכל הסימנים · הגרלה חדשה בכל פעם</span><span class="t3">לחצו כאן להתחלה<i>←</i></span>';bt.onclick=function(){setup();V.classList.add('on');document.body.style.overflow='hidden'};grid.parentNode.insertBefore(bt,grid)}
 })();
 </script>
+<style>
+nav.tabs{display:none!important}
+.nv2{position:sticky;top:0;z-index:120;background:#f8f5ec;border-bottom:2px solid #2b2a28}
+.nv2{width:100%;max-width:100vw;box-sizing:border-box}
+.nv2 .nvbar{display:flex;gap:2px;overflow-x:auto!important;width:100%;max-width:100%;box-sizing:border-box;min-width:0;scrollbar-width:none;padding:0 6px;justify-content:flex-start}
+.nv2 .nvbar::-webkit-scrollbar{display:none}
+@media(min-width:900px){.nv2 .nvbar{justify-content:center}}
+.nv2 .nvbar button{-webkit-appearance:none;appearance:none;flex:none;font-family:Suez,'Secular One';font-size:15px;color:#2b2a28;-webkit-text-fill-color:#2b2a28;background:none;border:0;padding:12px 12px 10px;cursor:pointer;position:relative;white-space:nowrap}
+.nv2 .nvbar button.on:after{content:'';position:absolute;left:10px;right:10px;bottom:-2px;height:4px;background:#f0c35c}
+.nv2 .nvbar button .ar{display:inline-block;font-size:10px;margin-right:5px;color:#9a7b3f;transition:transform .2s}
+.nv2 .nvbar button.op .ar{transform:rotate(180deg)}
+.nv2 .nvpnl{display:none;padding:12px 10px 14px;border-top:1px dashed #c9bfa8;background:#fffdf6;box-shadow:0 6px 12px rgba(43,42,40,.12)}
+.nv2 .nvpnl.on{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;max-width:900px;margin:0 auto}
+.nv2 .tile{-webkit-appearance:none;appearance:none;text-align:center;background:#fff;border:2px solid #2b2a28;border-radius:6px;padding:8px 6px 7px;cursor:pointer;box-shadow:2px 2px 0 #2b2a28;color:#2b2a28;-webkit-text-fill-color:#2b2a28}
+.nv2 .tile b{display:block;font-family:Suez,'Secular One';font-weight:400;font-size:17px}
+.nv2 .tile span{display:block;font-size:12.5px;color:#5a5245;-webkit-text-fill-color:#5a5245;margin-top:1px}
+.nv2 .tile.on{background:#f6e2b4}
+</style>
+<script>
+(function(){
+var G=[['הכנות לפסח',[10,11,12,15]],['בדיקה וביטול',[6,13,14,16,17,18]],['איסור החמץ',[23,22,24,20,21,19]],['כלים ומצות',[2,3,9,7,8,26]],['ערב פסח',[5,4,25,27]],['ספירת העומר',[28,1]]];
+var old=document.querySelector('nav.tabs');if(!old)return;
+var lab={};[].forEach.call(old.querySelectorAll('button'),function(b){var m=(b.getAttribute('onclick')||'').match(/\d+/);if(m)lab[m[0]]=b.textContent});
+G.forEach(function(g){g[1].sort(function(a,b){return [].indexOf.call(old.children,old.querySelector('[onclick="showTab('+a+')"]'))-[].indexOf.call(old.children,old.querySelector('[onclick="showTab('+b+')"]'))})});
+var nv=document.createElement('div');nv.className='nv2';
+var h='<div class="nvbar"><button data-h="1">בית</button>';G.forEach(function(g,i){h+='<button data-g="'+i+'">'+g[0]+'<span class="ar">▼</span></button>'});h+='</div><div class="nvpnl"></div>';nv.innerHTML=h;old.parentNode.insertBefore(nv,old);
+var P=nv.querySelector('.nvpnl'),cur=0,open=-1;
+function grpOf(n){for(var i=0;i<G.length;i++)if(G[i][1].indexOf(n)>=0)return i;return -1}
+function paint(){[].forEach.call(nv.querySelectorAll('.nvbar button'),function(b){var gi=b.dataset.g;b.classList.toggle('on',gi!=null?+gi===grpOf(cur):cur===0);b.classList.toggle('op',gi!=null&&+gi===open)})}
+function openG(i){if(open===i){open=-1;P.classList.remove('on');paint();return}open=i;P.innerHTML=G[i][1].map(function(n){var t=(lab[n]||'').split('·');return '<button class="tile'+(n===cur?' on':'')+'" data-t="'+n+'"><b>'+(t[0]||'').trim()+'</b><span>'+(t[1]||'').trim()+'</span></button>'}).join('');P.classList.add('on');paint()}
+nv.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;if(b.dataset.h){showTab(0);return}if(b.dataset.g!=null){openG(+b.dataset.g);return}if(b.dataset.t)showTab(+b.dataset.t)});
+var st=window.showTab;window.showTab=function(n){st(n);cur=n;open=-1;P.classList.remove('on');paint()};
+var a=document.querySelector('.tabpane.on');cur=a?[].indexOf.call(document.querySelectorAll('.tabpane'),a):0;paint();
+})();
+</script>
 </body>
 </html>
