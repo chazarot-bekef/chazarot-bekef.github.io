@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded',function(){fx(document.body)});})()
 </script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>חזרות על הלכות פסח בכיף</title><link rel="icon" type="image/png" sizes="32x32" href="icon-32.png"><link rel="icon" type="image/png" sizes="512x512" href="icon-512.png"><link rel="apple-touch-icon" href="icon-180.png">
+<title>חזרות על הלכות פסח בכיף</title><link rel="icon" type="image/png" sizes="32x32" href="icon-32.png"><link rel="icon" type="image/png" sizes="512x512" href="icon-512.png"><link rel="apple-touch-icon" href="icon-180.png"><link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#f8f5ec"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="חזרות בכיף">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Secular+One&family=Amatic+SC:wght@700&family=Heebo:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
@@ -4280,6 +4280,37 @@ F.onsubmit=function(e){e.preventDefault();var g=function(id){return document.get
   msg.innerHTML='לא הצלחנו לשלוח ישירות. <a href="mailto:'+TO+'?subject='+encodeURIComponent(d._subject)+'&body='+encodeURIComponent(body)+'">לחצו כאן לשליחה במייל</a>';
  }).then(function(){btn.disabled=false})};
 var nav=document.querySelector('.sfoot nav');if(nav){var a=document.createElement('a');a.textContent='הערות ותיקונים';a.setAttribute('role','button');a.tabIndex=0;a.onclick=op;nav.insertBefore(a,nav.firstChild)}
+})();
+</script>
+<style>
+.instb{display:none;width:min(520px,92%);margin:0 auto 18px;-webkit-appearance:none;appearance:none;background:#2b2a28;color:#f8f5ec;-webkit-text-fill-color:#f8f5ec;border:0;border-radius:8px;padding:12px 16px;font-family:Suez,'Secular One';font-size:17px;cursor:pointer;box-shadow:3px 3px 0 #9a7b3f}
+.instb small{display:block;font-family:inherit;font-size:12.5px;opacity:.8;margin-top:2px}
+.instb.on{display:block}
+#instm{display:none;position:fixed;inset:0;z-index:210;background:rgba(43,42,40,.55);padding:24px 12px;overflow:auto}
+#instm.on{display:block}
+#instm .box{max-width:440px;margin:40px auto 0;background:#fffdf6;border:2px solid #2b2a28;box-shadow:5px 5px 0 #2b2a28;padding:20px 22px;color:#2b2a28;font-size:16px;line-height:1.7}
+#instm h2{font-family:Suez,'Secular One';font-weight:400;font-size:24px;margin:0 0 8px}
+#instm ol{padding-right:22px;margin:6px 0}
+#instm .x{float:left;-webkit-appearance:none;appearance:none;background:none;border:0;border-bottom:1.5px solid #9a7b3f;font-family:Suez,'Secular One';font-size:15px;color:#7a6f5c;-webkit-text-fill-color:#7a6f5c;cursor:pointer}
+</style>
+<div id="instm" role="dialog" aria-modal="true"><div class="box"><button class="x" type="button" id="instx">סגירה ✕</button><h2>התקנה בטלפון</h2><div id="instt"></div></div></div>
+<script>
+(function(){
+if(location.protocol.indexOf('http')===0&&'serviceWorker' in navigator){try{navigator.serviceWorker.register('sw.js')}catch(e){}}
+var standalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone;if(standalone)return;
+var ua=navigator.userAgent,ios=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),and=/android/i.test(ua),deferred=null;
+var M=document.getElementById('instm'),T=document.getElementById('instt');
+function show(h){T.innerHTML=h;M.classList.add('on')}
+document.getElementById('instx').onclick=function(){M.classList.remove('on')};M.onclick=function(e){if(e.target===M)M.classList.remove('on')};
+var home=document.getElementById('tab0'),grid=home&&home.querySelector('.sumbtn')||home&&home.querySelector('.hgrid');if(!grid)return;
+var b=document.createElement('button');b.className='instb';b.type='button';b.innerHTML='התקנת האתר כאפליקציה בטלפון<small>גישה מהירה ממסך הבית, במסך מלא</small>';grid.parentNode.insertBefore(b,grid);
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferred=e;b.classList.add('on')});
+if(ios||and)b.classList.add('on');
+b.onclick=function(){
+ if(deferred){deferred.prompt();deferred.userChoice.then(function(){deferred=null;b.classList.remove('on')});return}
+ if(ios)show('<ol><li>פתחו את האתר בדפדפן <b>Safari</b>.</li><li>לחצו על כפתור השיתוף <b>⎙</b> (ריבוע עם חץ למעלה) בתחתית המסך.</li><li>גללו ובחרו <b>"הוספה למסך הבית"</b>.</li><li>לחצו <b>"הוסף"</b>.</li></ol>');
+ else show('<ol><li>פתחו את האתר בדפדפן <b>Chrome</b>.</li><li>לחצו על תפריט <b>⋮</b> בפינה העליונה.</li><li>בחרו <b>"התקנת אפליקציה"</b> או <b>"הוספה למסך הבית"</b>.</li><li>אשרו בלחיצה על <b>"התקנה"</b>.</li></ol>');
+};
 })();
 </script>
 <style>
