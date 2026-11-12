@@ -4536,5 +4536,28 @@ var st=window.showTab;window.showTab=function(n){st(n);cur=n;open=-1;P.classList
 var a=document.querySelector('.tabpane.on');cur=a?[].indexOf.call(document.querySelectorAll('.tabpane'),a):0;paint();
 })();
 </script>
+<style>
+.best{font-size:13.5px;color:#5a5245;-webkit-text-fill-color:#5a5245;margin-top:4px;text-align:center}
+.best button{font:inherit;font-size:12.5px;background:none;border:0;color:#9a4b3c;-webkit-text-fill-color:#9a4b3c;text-decoration:underline;cursor:pointer;margin-inline-start:8px;padding:2px}
+.bestall{display:block;margin:18px auto 6px;font-family:'Secular One',Suez;font-size:13.5px;background:none;border:1px solid #b9ad95;border-radius:3px;color:#5a5245;-webkit-text-fill-color:#5a5245;padding:7px 14px;cursor:pointer}
+</style>
+<script>
+(function(){
+var KEY='chz-best',B={};try{B=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(B))}catch(e){}}
+var panes=[].slice.call(document.querySelectorAll('.tabpane'));
+var rows=[];
+panes.forEach(function(p,n){if(!n)return;var sc=p.querySelector('.score span[id$="sc"]');if(!sc)return;var tot=document.getElementById(sc.id.replace(/sc$/,'tot'));if(!tot)return;
+ var box=document.createElement('div');box.className='best';sc.closest('.score').appendChild(box);
+ function show(){var b=B[n];box.innerHTML=b&&b.s?('🏆 השיא שלך: '+b.s+' / '+b.t+'<button type="button">איפוס</button>'):'';var row=document.querySelector('.hrow[onclick="showTab('+n+')"]');if(row){var hp=row.querySelector('.hp'),bar=row.querySelector('.hbar i');if(hp)hp.textContent=b&&b.s?'🏆 '+b.s+' / '+b.t:'';if(bar)bar.style.width=b&&b.t?Math.round(100*b.s/b.t)+'%':''}}
+ function chk(){var s=+sc.textContent||0,t=+tot.textContent||0;if(s>0&&(!B[n]||s>B[n].s)){B[n]={s:s,t:t};save()}show()}
+ box.addEventListener('click',function(e){if(e.target.tagName!=='BUTTON')return;if(!confirm('לאפס את השיא של הסימן הזה?'))return;delete B[n];save();show()});
+ new MutationObserver(chk).observe(sc,{childList:true,characterData:true,subtree:true});
+ rows.push(show);show();
+});
+var st=window.showTab;window.showTab=function(n){st(n);if(n===0)setTimeout(function(){rows.forEach(function(f){f()})},0)};
+var home=panes[0];if(home){var a=document.createElement('button');a.className='bestall';a.type='button';a.textContent='איפוס כל השיאים';a.onclick=function(){if(!confirm('לאפס את כל השיאים בכל הסימנים?'))return;B={};save();rows.forEach(function(f){f()})};home.appendChild(a)}
+})();
+</script>
 </body>
 </html>
